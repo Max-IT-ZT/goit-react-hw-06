@@ -1,12 +1,14 @@
 import { IoPersonAddSharp } from "react-icons/io5";
 import { ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { nanoid } from "nanoid";
 import { useId } from "react";
 import css from "./ContactForm.module.css";
 import { Formik, Form, Field } from "formik";
+import { useDispatch } from "react-redux";
+import { addContact } from "../../redux/contactsSlice";
+import { nanoid } from "nanoid";
 
-export default function ContactForm({ onAdd }) {
+export default function ContactForm() {
   const nameId = useId();
   const numberId = useId();
   const FeedbackSchema = Yup.object().shape({
@@ -20,14 +22,18 @@ export default function ContactForm({ onAdd }) {
       .required("Required"),
   });
 
+  const dispatch = useDispatch();
+
   const handleSubmit = (values, actions) => {
     console.log(values);
     actions.resetForm();
-    onAdd({
-      id: nanoid(),
-      name: values.name,
-      number: values.number,
-    });
+    dispatch(
+      addContact({
+        name: values.name,
+        number: values.number,
+        id: nanoid(),
+      })
+    );
   };
 
   return (
